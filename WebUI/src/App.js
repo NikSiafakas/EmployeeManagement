@@ -1,43 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
-import { Component } from 'react'; 
+import { Skills } from './Skills';
+import { Employee } from './Employee';
+import { Employees } from './Employees';
+import { BrowserRouter, Route, Routes, NavLink } from 'react-router-dom';
 
-let API_URL_Skill = "http://localhost:5273/api/Skill";
-let API_URL_Employee = "http://localhost:5273/api/Employee";
-
-class App extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { skills: [] }
-  }
-
-  componentDidMount() {
-    this.refreshSkills();
-  }
-
-  render() {
-    const{skills} = this.state;
+  function App() {
     return (
-      <div className="App">
-        <h2>Employee Management</h2>
+      <BrowserRouter>
+      <div className="App container">
+        <h3 className='d-flex justify-content-center m-3'>Employee Management</h3>
 
-        {skills.map(skill =>
-        <p>
-          <b>* {skill.Name}</b>
-        </p>
-        )}
+        <nav className='navbar navbar-expand-sm bg-light navbar-dark'>
+          <ul className='navbar-nav'>
+            <li className='nac-item- m-1'>
+              <NavLink className={"btn btn-light btn-outline-primary"} to="/Skills">Skills</NavLink>
+            </li>
+            <li className='nac-item- m-1'>
+              <NavLink className={"btn btn-light btn-outline-primary"} to="/Employees">Employees</NavLink>
+            </li>
+          </ul>
+        </nav>
+        <Routes>
+          <Route path="/" to="/Skills" element={<Skills/>}/>
+          <Route path="/Skills" element={<Skills/>}/>
+          <Route path="/Employee" element={<Employee/>}/>
+          <Route path="/Employees" element={<Employees/>}/>
+        </Routes>
 
       </div>
+      </BrowserRouter>
     );
   }
-
-  async refreshSkills() {
-    fetch(API_URL_Skill).then(response => response.json())
-    .then(data => {
-      this.setState({ skills: data });
-    })
-  }
-}
 
 export default App;

@@ -38,7 +38,9 @@ public class SkillController : ControllerBase
             return BadRequest();
 
         skill.Id = skills.Max(a => a.Id) + 1;
+        skill.Created = DateTime.Now;
         skills.Add(skill);
+
         return CreatedAtAction(nameof(GetById), new { id = skill.Id }, null);
     }
 
