@@ -7,15 +7,17 @@ export class Employees extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            skills: [],
             employees: [],
             employeesNameFilter: "",
             employeesSurnameFilter: "",
+            employeesSkillsetFilter: 0,
             employeesWithoutFilter: []
         }
     }
       
     render() {
-        const { employees } = this.state;
+        const { employees, skills } = this.state;
         return (
             <div>
                 <NavLink className='btn btn-primary m-2 float-end' to="/Employee" onClick={() => this.setupEmployeePage(-1)}>Add Employee</NavLink>
@@ -23,9 +25,18 @@ export class Employees extends Component {
                 <table className='table table-striped'>
                     <thead>
                         <tr>
+                            <th><input id='EmployeeNameFilter' className='form-control m-2' onChange={this.changeEmployeeNameFilter} placeholder='Filter'/></th>
+                            <th><input id='EmployeeSurnameFilter' className='form-control m-2' onChange={this.changeEmployeeSurnameFilter} placeholder='Filter'/></th>
+                            <th><select className="form-select m-2" style={{margin: 8, paddingTop: 6, paddingRight: 12, paddingBottom: 6, paddingLeft: 12}}
+                                id="EmployeeSkillsetFilter" onChange={() => this.changeEmployeeSkillsetFilter()}>
+                                <option defaultValue>Filter by Skill</option>
+                                {skills.map(a => (
+                                <option key={a.Id} value={a.Id}>{a.Name}</option>))}
+                                </select>
+                            </th>
+                        </tr>
+                        <tr>
                             <th>
-                                <input id='EmployeeNameFilter' className='form-control m-2' onChange={this.changeEmployeeNameFilter} placeholder='Filter'/>
-                                
                                 <div className='d-flex flex-row'>
                                     <div style={{paddingTop: 5, paddingRight: 6}}>Name</div>
                                     <button type='button' className='btn' style={{padding: 3}} onClick={() => this.sortEmployees('Name', true)}>
@@ -40,8 +51,6 @@ export class Employees extends Component {
                                 </div>
                             </th>
                             <th>
-                                <input id='EmployeeSurnameFilter' className='form-control m-2' onChange={this.changeEmployeeSurnameFilter} placeholder='Filter'/>
-                                
                                 <div className='d-flex flex-row'>
                                     <div style={{paddingTop: 5, paddingRight: 6}}>Surname</div>
                                     <button type='button' className='btn' style={{padding: 3}} onClick={() => this.sortEmployees('Surname', true)}>
@@ -55,7 +64,6 @@ export class Employees extends Component {
                                 </div>
                             </th>
                             <th>Email</th>
-                            <th>Phone</th>
                             <th>
                                 <div className='d-flex flex-row'>
                                     <div style={{paddingTop: 5, paddingRight: 6}}>Hired</div>
@@ -77,7 +85,6 @@ export class Employees extends Component {
                             <td>{a.Name}</td>
                             <td>{a.Surname}</td>
                             <td>{a.Email}</td>
-                            <td>{a.Phone}</td>
                             <td>{new Date(a.Hired).toISOString().split('T')[0]}</td>
                             <td><NavLink className='btn btn-light mr-1' to="/Employee" onClick={() => this.setupEmployeePage(a.Id)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-info-square" viewBox="0 0 16 16">
@@ -95,6 +102,7 @@ export class Employees extends Component {
     
     componentDidMount() {
         this.refreshEmployees();
+        this.refreshSkills();
     }
 
     changeEmployeeNameFilter = (e) => {
@@ -105,13 +113,24 @@ export class Employees extends Component {
         this.state.employeesSurnameFilter = e.target.value;
         this.filterEmployees();
     }
+    changeEmployeeSkillsetFilter() {
+        let skillSelected = 0;
+        let employeeSkillsetFilter = document.getElementById("EmployeeSkillsetFilter");
+        if (employeeSkillsetFilter.value > 0) {
+            skillSelected = parseInt(employeeSkillsetFilter.value);
+        }
+        this.state.employeesSkillsetFilter = skillSelected;
+        this.filterEmployees();
+    }
     filterEmployees() {
         let employeesNameFilter = this.state.employeesNameFilter;
         let employeesSurnameFilter = this.state.employeesSurnameFilter;
+        let employeesSkillsetFilter = this.state.employeesSkillsetFilter;
         let filteredData = this.state.employeesWithoutFilter.filter(
             function(emp) {
                 return emp.Name.trim().toLowerCase().includes(employeesNameFilter.trim().toLowerCase()) &&
-                    emp.Surname.trim().toLowerCase().includes(employeesSurnameFilter.trim().toLowerCase())
+                    emp.Surname.trim().toLowerCase().includes(employeesSurnameFilter.trim().toLowerCase()) &&
+                    ((employeesSkillsetFilter > 0) ? emp.Skillset.includes(employeesSkillsetFilter) : true);
             }
         );
         this.setState({ employees: filteredData });
@@ -125,8 +144,8 @@ export class Employees extends Component {
 
         let sortedData = this.state.employeesWithoutFilter.sort(
             function(a,b) {
-                if (asc) { return (a[prop]>b[prop]) ? 1 : ((a[prop]<b[prop]) ? -1 : 0); }
-                return (b[prop]>a[prop]) ? 1 : ((b[prop]<a[prop]) ? -1 : 0);
+                if (asc) { return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0); }
+                return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
             }
         );
         this.setState({ employees: sortedData });
@@ -139,5 +158,10 @@ export class Employees extends Component {
     async refreshEmployees() {
         fetch(variables.API_URL_Employee).then(response => response.json())
         .then(data => { this.setState({ employees: data, employeesWithoutFilter: data }); })
+    }
+
+    async refreshSkills() {
+        fetch(variables.API_URL_Skill).then(response => response.json())
+        .then(data => { this.setState({ skills: data }); });
     }
 }
