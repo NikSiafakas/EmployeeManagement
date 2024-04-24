@@ -118,13 +118,13 @@ export class Skills extends Component {
     }
 
     async updateSkill() {
-        fetch(variables.API_URL_Skill + '/' + this.state.skillId, {
+        fetch(variables.API_URL_Skill, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ Name: this.state.skillName, Description: this.state.skillDescription })
+            body: JSON.stringify({ Id: this.state.skillId, Name: this.state.skillName, Description: this.state.skillDescription })
         }).then((result) => { result.ok ? alert('Updated') : alert('Unsuccessful'); window.location.reload(); }, (error) => { alert(error); })
     }
 

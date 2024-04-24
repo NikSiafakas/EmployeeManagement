@@ -130,7 +130,7 @@ export class Employees extends Component {
             function(emp) {
                 return emp.Name.trim().toLowerCase().includes(employeesNameFilter.trim().toLowerCase()) &&
                     emp.Surname.trim().toLowerCase().includes(employeesSurnameFilter.trim().toLowerCase()) &&
-                    ((employeesSkillsetFilter > 0) ? emp.Skillset.includes(employeesSkillsetFilter) : true);
+                    ((employeesSkillsetFilter > 0) ? emp.SkillsetList.includes(employeesSkillsetFilter) : true);
             }
         );
         this.setState({ employees: filteredData });

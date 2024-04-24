@@ -4,7 +4,7 @@ namespace EmployeeManagementAPI.Models;
 
 public class SkillModel
 {
-    public int Id { get; set; }                 // PK
+    public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]

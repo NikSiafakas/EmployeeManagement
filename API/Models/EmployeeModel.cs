@@ -4,7 +4,7 @@ namespace EmployeeManagementAPI.Models;
 
 public class EmployeeModel
 {
-    public int Id { get; set; }                 // PK
+    public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]
@@ -12,21 +12,13 @@ public class EmployeeModel
     [Required]
     public string Email { get; set; }
     public string Phone { get; set; }
-    public IList<int> Skillset { get; set; }    // FK
-
     [Required]
-    public string Hired {
-        get { return _hired.ToString("yyyy-MM-dd"); }
-        set { _hired = DateTime.Parse(value); }
-    }
-    private DateTime _hired;
-    //public DateTime Hired { get; set; }
+    public DateTime Hired { get; set; }
+    public string Skillset { get; set; }
+    public DateTime SkillsetUpdated { get; set; }
 
-    public string SkillsetUpdated
+    public List<int> SkillsetList
     {
-        get { return _skillsetUpdated.ToString("yyyy-MM-dd"); }
-        set { _skillsetUpdated = DateTime.Parse(value); }
+        get => String.IsNullOrWhiteSpace(Skillset) ? new List<int>() : Skillset.Split(',').Select(a => int.Parse(a)).ToList();
     }
-    private DateTime _skillsetUpdated;
-    //public DateTime SkillsetUpdated { get; set; }
 }

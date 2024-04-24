@@ -4,7 +4,6 @@ import { variables } from './Variables';
 export class Employee extends Component {
 
     constructor(props) {
-        if (!props) debugger;
         super(props);
         this.state = {
             skills: [],
@@ -55,12 +54,12 @@ export class Employee extends Component {
                     <div className='row g-2'>
                         <div className='col'>
                             <label>Hired</label>
-                            <input type='date' className='form-control' value={employeeHired} onChange={this.changeHired}/>
+                            <input type='date' className='form-control' value={new Date(employeeHired).toISOString().split('T')[0]} onChange={this.changeHired}/>
                         </div>
                         {employeeExists ?
                         <div className='col'>
                             <label>Skillset Updated</label>
-                            <input type='date' className='form-control' value={employeeSkillsetUpdated} readOnly/>
+                            <input type='date' className='form-control' value={new Date(employeeSkillsetUpdated).toISOString().split('T')[0]} readOnly/>
                         </div> : <div className='col'></div>}
                     </div>
                     <div className='row g-1'>
@@ -145,15 +144,15 @@ export class Employee extends Component {
     async getEmployee(empId) {
         if (empId <= 0) return;
         fetch(variables.API_URL_Employee + '/' + empId).then(response => response.json())
-        .then(data => { 
-            this.setState({ 
+        .then(data => {
+            this.setState({
                 employeeId: data.Id,
                 employeeName: data.Name,
                 employeeSurname: data.Surname,
                 employeeEmail: data.Email,
                 employeePhone: data.Phone,
                 employeeHired: data.Hired,
-                employeeSkillset: data.Skillset,
+                employeeSkillset: data.SkillsetList,
                 employeeSkillsetUpdated: data.SkillsetUpdated
             }, function() {this.setEmployeeSkillsetInfoList()});
         })
@@ -172,7 +171,8 @@ export class Employee extends Component {
                 Email: this.state.employeeEmail,
                 Phone: this.state.employeePhone,
                 Hired: this.state.employeeHired,
-                Skillset: this.state.employeeSkillset_InfoList.map(a => a.Id)
+                SkillsetUpdated: new Date(),
+                Skillset: this.state.employeeSkillset_InfoList.map(a => a.Id).toString()
             })
         }).then((result) => {
             if (result.ok) {
@@ -184,19 +184,21 @@ export class Employee extends Component {
     }
 
     async updateEmployee() {
-        fetch(variables.API_URL_Employee + '/' + this.state.employeeId, {
+        fetch(variables.API_URL_Employee, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                Id: this.state.employeeId,
                 Name: this.state.employeeName,
                 Surname: this.state.employeeSurname,
                 Email: this.state.employeeEmail,
                 Phone: this.state.employeePhone,
                 Hired: this.state.employeeHired,
-                Skillset: this.state.employeeSkillset_InfoList.map(a => a.Id)
+                SkillsetUpdated: this.state.employeeSkillsetUpdated,
+                Skillset: this.state.employeeSkillset_InfoList.map(a => a.Id).toString()
             })
         }).then((result) => {
             if (result.ok) {
