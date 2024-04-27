@@ -14,7 +14,9 @@ Use git to clone the repository and open it with Visual Studio.
 
 Modify the "DefaultConnection" in the appsettings.json file to select a server (changing the 'my_server' value to your server name) and Build the solution.
 
-Open the Package Manager Console, change the directory to '\API' and execute 'dotnet ef database update' to create the database. If you do not want sample data in your database, comment out the 'OnModelCreating' method in 'DbContext_SqlServer.cs'.
+Open the Package Manager Console and install Entity Framework by executing 'dotnet tool install --global dotnet-ef'.
+Then, change the directory to '\API' and execute 'dotnet ef database update' to create the database.
+If you do not want sample data in your database, comment out the 'OnModelCreating' method in 'DbContext_SqlServer.cs'.
 
 Open the Command Line, change the directory to '\WebUI' and execute 'npm install react-router-dom'.
 
