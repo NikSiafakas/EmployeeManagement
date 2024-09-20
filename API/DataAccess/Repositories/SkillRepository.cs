@@ -1,5 +1,4 @@
 ﻿using EmployeeManagementAPI.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementAPI.DataAccess.Repositories;
@@ -13,12 +12,12 @@ public class SkillRepository : ISkillRepository
     }
 
 
-    public async Task<ActionResult<IEnumerable<SkillModel>>> Get()
+    public async Task<IEnumerable<SkillModel>> Get()
     {
         return _context.Skills;
     }
 
-    public async Task<ActionResult<SkillModel>> GetById(int id)
+    public async Task<SkillModel> GetById(int id)
     {
         var skill = await _context.Skills.SingleOrDefaultAsync(a => a.Id == id);
         if (skill == null)
@@ -29,6 +28,7 @@ public class SkillRepository : ISkillRepository
 
     public async Task<SkillModel> Post(SkillModel skill)
     {
+        skill.Id = 0;
         skill.Created = DateTime.UtcNow;
         await _context.Skills.AddAsync(skill);
         await _context.SaveChangesAsync();

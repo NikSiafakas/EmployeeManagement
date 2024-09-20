@@ -22,7 +22,7 @@ public class EmployeeController : ControllerBase
         try
         {
             var employees = await _employeeRepository.Get();
-            return employees.Value.Any() ? employees : NotFound();
+            return employees.Any() ? Ok(employees) : NotFound();
         }
         catch (Exception ex)
         {

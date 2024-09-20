@@ -22,7 +22,7 @@ public class SkillController : ControllerBase
         try
         {
             var skills = await _skillRepository.Get();
-            return skills.Value.Any() ? skills : NotFound();
+            return skills.Any() ? Ok(skills) : NotFound();
         }
         catch (Exception ex)
         {

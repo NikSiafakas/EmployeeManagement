@@ -5,8 +5,8 @@ namespace EmployeeManagementAPI.DataAccess.Repositories;
 
 public interface IEmployeeRepository
 {
-    Task<ActionResult<IEnumerable<EmployeeModel>>> Get();
-    Task<ActionResult<EmployeeModel>> GetById(int id);
+    Task<IEnumerable<EmployeeModel>> Get();
+    Task<EmployeeModel> GetById(int id);
     Task<EmployeeModel> Post(EmployeeModel employee);
     Task<EmployeeModel> Put(EmployeeModel updated);
     Task Delete(int id);
